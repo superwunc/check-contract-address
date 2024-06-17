@@ -42212,20 +42212,43 @@ async function run() {
                 allContractAddress.push(m[0]);
             }
         }
-        console.log('allContractAddress', allContractAddress.length);
         const contractAddressGroup = lodash_1.default.chunk(allContractAddress, 5);
         if (contractAddressGroup.length > 0) {
             for (let i = 0, l = contractAddressGroup.length; i < l; i++) {
                 const contractAddress = contractAddressGroup[i];
-                console.log('allContractAddress', contractAddress);
-                const response = await fetch(`https://api.bscscan.com/api?module=contract&action=getcontractcreation&contractaddresses=${contractAddress.join(',')}&apikey=QY72EPJVK99S1WHIE5QHCCSEBTX2NFWJT3`);
+                // console.log('allContractAddress', contractAddress)
+                let response = await fetch(`https://api.bscscan.com/api?module=contract&action=getcontractcreation&contractaddresses=${contractAddress.join(',')}&apikey=QY72EPJVK99S1WHIE5QHCCSEBTX2NFWJT3`);
                 if (response.ok) {
                     const data = await response.json();
                     if (data.status === '1') {
                         data.result.forEach((item) => {
                             if (item.contractCreator !==
                                 '0x0cdb34e6a4d635142bb92fe403d38f636bbb77b8') {
-                                console.log('BSC' + item.contractAddress, 'Contract Creator is ' + item.contractCreator);
+                                console.log('BSC ' + item.contractAddress, 'Contract Creator is ' + item.contractCreator);
+                            }
+                        });
+                    }
+                }
+                response = await fetch(`https://api.etherscan.io/api?module=contract&action=getcontractcreation&contractaddresses=${contractAddress.join(',')}&apikey=2GSHW7BZXKR9EDV8GW5PF59F9DVCNHETFS`);
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.status === '1') {
+                        data.result.forEach((item) => {
+                            if (item.contractCreator !==
+                                '0x0cdb34e6a4d635142bb92fe403d38f636bbb77b8') {
+                                console.log('ETH ' + item.contractAddress, 'Contract Creator is ' + item.contractCreator);
+                            }
+                        });
+                    }
+                }
+                response = await fetch(`https://api-optimistic.etherscan.io/api?module=contract&action=getcontractcreation&contractaddresses=${contractAddress.join(',')}&apikey=5WFY5FU9EHZUA6BITY65YBI1G6HJC8FDD7`);
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.status === '1') {
+                        data.result.forEach((item) => {
+                            if (item.contractCreator !==
+                                '0x0cdb34e6a4d635142bb92fe403d38f636bbb77b8') {
+                                console.log('OPT ' + item.contractAddress, 'Contract Creator is ' + item.contractCreator);
                             }
                         });
                     }
