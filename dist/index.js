@@ -42212,10 +42212,12 @@ async function run() {
                 allContractAddress.push(m[0]);
             }
         }
+        console.log('allContractAddress', allContractAddress.length);
         const contractAddressGroup = lodash_1.default.chunk(allContractAddress, 5);
         if (contractAddressGroup.length > 0) {
             for (let i = 0, l = contractAddressGroup.length; i < l; i++) {
                 const contractAddress = contractAddressGroup[i];
+                console.log('allContractAddress', contractAddress);
                 const response = await fetch(`https://api.bscscan.com/api?module=contract&action=getcontractcreation&contractaddresses=${contractAddress.join(',')}&apikey=QY72EPJVK99S1WHIE5QHCCSEBTX2NFWJT3`);
                 if (response.ok) {
                     const data = await response.json();
