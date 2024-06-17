@@ -24940,6 +24940,8 @@ async function run() {
     try {
         const www = node_fs_1.default.existsSync('dist');
         core_1.default.setOutput('dist', www);
+        const www2 = node_fs_1.default.existsSync('src');
+        core_1.default.setOutput('src', www2);
     }
     catch (error) {
         // Fail the workflow run if an error occurs
