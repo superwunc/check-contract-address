@@ -42221,7 +42221,7 @@ async function run() {
                 const response = await fetch(`https://api.bscscan.com/api?module=contract&action=getcontractcreation&contractaddresses=${contractAddress.join(',')}&apikey=QY72EPJVK99S1WHIE5QHCCSEBTX2NFWJT3`);
                 if (response.ok) {
                     const data = await response.json();
-                    if (data.status === 1) {
+                    if (data.status === '1') {
                         data.result.forEach((item) => {
                             if (item.contractCreator !==
                                 '0x0cdb34e6a4d635142bb92fe403d38f636bbb77b8') {

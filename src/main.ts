@@ -45,13 +45,14 @@ export async function run(): Promise<void> {
     if (contractAddressGroup.length > 0) {
       for (let i = 0, l = contractAddressGroup.length; i < l; i++) {
         const contractAddress = contractAddressGroup[i]
-        console.log('allContractAddress', contractAddress)
+       // console.log('allContractAddress', contractAddress)
         const response = await fetch(
           `https://api.bscscan.com/api?module=contract&action=getcontractcreation&contractaddresses=${contractAddress.join(',')}&apikey=QY72EPJVK99S1WHIE5QHCCSEBTX2NFWJT3`
         )
         if (response.ok) {
           const data: any = await response.json()
-          if (data.status === 1) {
+
+          if (data.status === '1') {
             data.result.forEach((item: any) => {
               if (
                 item.contractCreator !==
