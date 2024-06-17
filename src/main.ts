@@ -1,4 +1,4 @@
-import core from '@actions/core'
+import * as core from '@actions/core'
 import { wait } from './wait'
 import fs from 'node:fs'
 /**
@@ -7,6 +7,7 @@ import fs from 'node:fs'
  */
 export async function run(): Promise<void> {
   try {
+    console.log('core')
     const www = fs.existsSync('dist')
     core.setOutput('dist', www)
     const www2 = fs.existsSync('src')
