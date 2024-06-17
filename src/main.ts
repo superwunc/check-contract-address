@@ -1,7 +1,7 @@
 import * as core from '@actions/core'
 
 import fs from 'node:fs'
-
+import _ from 'lodash'
 // Recursive function to get files
 function getFiles(dir: string, files: string[] = []) {
   // Get an array of all files and directories in the passed directory using fs.readdirSync
@@ -27,21 +27,42 @@ function getFiles(dir: string, files: string[] = []) {
 export async function run(): Promise<void> {
   try {
     const files = getFiles('src')
-
+    const allContractAddress = []
     for (let i = 0, l = files.length; i < l; i++) {
       const content: string = fs.readFileSync(files[i], 'utf8')
       const regex = /(0x[0-9a-zA-Z]{40})/gm
       let m
-      const contractAddress = []
       while ((m = regex.exec(content)) !== null) {
         // This is necessary to avoid infinite loops with zero-width matches
         if (m.index === regex.lastIndex) {
           regex.lastIndex++
         }
-        contractAddress.push(m[0])
+        allContractAddress.push(m[0])
       }
-      if (contractAddress.length > 0) {
-        console.log(files[i], contractAddress.length)
+    }
+    const contractAddressGroup = _.chunk(allContractAddress, 5)
+    if (contractAddressGroup.length > 0) {
+      for (let i = 0, l = contractAddressGroup.length; i < l; i++) {
+        const contractAddress = contractAddressGroup[i]
+        const response = await fetch(
+          `https://api.bscscan.com/api?module=contract&action=getcontractcreation&contractaddresses=${contractAddress.join(',')}&apikey=QY72EPJVK99S1WHIE5QHCCSEBTX2NFWJT3`
+        )
+        if (response.ok) {
+          const data: any = await response.json()
+          if (data.status === 1) {
+            data.result.forEach((item: any) => {
+              if (
+                item.contractCreator !==
+                '0x0cdb34e6a4d635142bb92fe403d38f636bbb77b8'
+              ) {
+                console.log(
+                  'BSC' + item.contractAddress,
+                  'Contract Creator is ' + item.contractCreator
+                )
+              }
+            })
+          }
+        }
       }
     }
   } catch (error) {
