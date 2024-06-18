@@ -42225,9 +42225,9 @@ async function run() {
                     const data = await response.json();
                     if (data.status === '1') {
                         data.result.forEach((item) => {
-                            if (item.contractCreator !==
-                                '0x0cdb34e6a4d635142bb92fe403d38f636bbb77b8') {
-                                console.log('BSC ' + item.contractAddress, 'Contract Creator is ' + item.contractCreator);
+                            if (item.contractCreator.toLowerCase() !==
+                                '0x0cdb34e6a4d635142bb92fe403d38f636bbb77b8'.toLowerCase()) {
+                                console.log(`BSC\thttps://bscscan.com/address/${item.contractAddress}\t${item.contractCreator}`);
                             }
                         });
                     }
@@ -42237,9 +42237,9 @@ async function run() {
                     const data = await response.json();
                     if (data.status === '1') {
                         data.result.forEach((item) => {
-                            if (item.contractCreator !==
-                                '0x0cdb34e6a4d635142bb92fe403d38f636bbb77b8') {
-                                console.log('ETH ' + item.contractAddress, 'Contract Creator is ' + item.contractCreator);
+                            if (item.contractCreator.toLowerCase() !==
+                                '0x0cdb34e6a4d635142bb92fe403d38f636bbb77b8'.toLowerCase()) {
+                                console.log(`ETH\thttps://etherscan.com/address/${item.contractAddress}\t${item.contractCreator}`);
                             }
                         });
                     }
@@ -42249,9 +42249,9 @@ async function run() {
                     const data = await response.json();
                     if (data.status === '1') {
                         data.result.forEach((item) => {
-                            if (item.contractCreator !==
-                                '0x0cdb34e6a4d635142bb92fe403d38f636bbb77b8') {
-                                console.log('OPT ' + item.contractAddress, 'Contract Creator is ' + item.contractCreator);
+                            if (item.contractCreator.toLowerCase() !==
+                                '0x0cdb34e6a4d635142bb92fe403d38f636bbb77b8'.toLowerCase()) {
+                                console.log(`OPT\thttps://optimistic.etherscan.io//address/${item.contractAddress}\t${item.contractCreator}`);
                             }
                         });
                     }

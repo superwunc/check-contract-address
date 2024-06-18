@@ -56,12 +56,11 @@ export async function run(): Promise<void> {
           if (data.status === '1') {
             data.result.forEach((item: any) => {
               if (
-                item.contractCreator !==
-                '0x0cdb34e6a4d635142bb92fe403d38f636bbb77b8'
+                item.contractCreator.toLowerCase() !==
+                '0x0cdb34e6a4d635142bb92fe403d38f636bbb77b8'.toLowerCase()
               ) {
                 console.log(
-                  'BSC ' + item.contractAddress,
-                  'Contract Creator is ' + item.contractCreator
+                  `BSC\thttps://bscscan.com/address/${item.contractAddress}\t${item.contractCreator}`
                 )
               }
             })
@@ -75,12 +74,11 @@ export async function run(): Promise<void> {
           if (data.status === '1') {
             data.result.forEach((item: any) => {
               if (
-                item.contractCreator !==
-                '0x0cdb34e6a4d635142bb92fe403d38f636bbb77b8'
+                item.contractCreator.toLowerCase() !==
+                '0x0cdb34e6a4d635142bb92fe403d38f636bbb77b8'.toLowerCase()
               ) {
                 console.log(
-                  'ETH ' + item.contractAddress,
-                  'Contract Creator is ' + item.contractCreator
+                  `ETH\thttps://etherscan.com/address/${item.contractAddress}\t${item.contractCreator}`
                 )
               }
             })
@@ -95,12 +93,11 @@ export async function run(): Promise<void> {
           if (data.status === '1') {
             data.result.forEach((item: any) => {
               if (
-                item.contractCreator !==
-                '0x0cdb34e6a4d635142bb92fe403d38f636bbb77b8'
+                item.contractCreator.toLowerCase() !==
+                '0x0cdb34e6a4d635142bb92fe403d38f636bbb77b8'.toLowerCase()
               ) {
                 console.log(
-                  'OPT ' + item.contractAddress,
-                  'Contract Creator is ' + item.contractCreator
+                  `OPT\thttps://optimistic.etherscan.io//address/${item.contractAddress}\t${item.contractCreator}`
                 )
               }
             })
