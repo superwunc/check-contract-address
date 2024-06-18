@@ -27,7 +27,7 @@ function getFiles(dir: string, files: string[] = []) {
 export async function run(): Promise<void> {
   try {
     const files = getFiles('src')
-    const allContractAddress = []
+    const allContractAddress = new Set()
     for (let i = 0, l = files.length; i < l; i++) {
       const content: string = fs.readFileSync(files[i], 'utf8')
       const regex = /(0x[0-9a-zA-Z]{40})/gm
@@ -37,10 +37,10 @@ export async function run(): Promise<void> {
         if (m.index === regex.lastIndex) {
           regex.lastIndex++
         }
-        allContractAddress.push(m[0])
+        allContractAddress.add(m[0].toLowerCase())
       }
     }
-    const contractAddressGroup = _.chunk(allContractAddress, 5)
+    const contractAddressGroup = _.chunk(Array.from(allContractAddress), 5)
     if (contractAddressGroup.length > 0) {
       for (let i = 0, l = contractAddressGroup.length; i < l; i++) {
         const contractAddress = contractAddressGroup[i]
