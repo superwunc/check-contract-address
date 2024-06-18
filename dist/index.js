@@ -42173,6 +42173,20 @@ exports.run = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const node_fs_1 = __importDefault(__nccwpck_require__(7561));
 const lodash_1 = __importDefault(__nccwpck_require__(250));
+const PendleDeployer = [
+    '0x59aad2C81b86df6E4A0Dae51c5C5bd45Ba451875',
+    '0x1FcCC097db89A86Bfc474A1028F93958295b1Fb7',
+    '0xC107DAcAf1d6e369CFDc67695BEAdf5e2068191e',
+    '0x196e6d50df6289e1F82838E84774b2B0c8f4aF62'
+];
+const MagpieDeployer = ['0x0cdb34e6a4d635142bb92fe403d38f636bbb77b8'];
+const WombatDeployer = [
+    '0x8c6644415b3F3CD7FC0A453c5bE3d3306Fe0b2F9',
+    '0xcB3Bb767104e0b3235520fafB182e005D7efD045'
+];
+const DeployList = PendleDeployer.concat(MagpieDeployer)
+    .concat(WombatDeployer)
+    .map(item => item.toLowerCase());
 // Recursive function to get files
 function getFiles(dir, files = []) {
     // Get an array of all files and directories in the passed directory using fs.readdirSync
@@ -42225,8 +42239,7 @@ async function run() {
                     const data = await response.json();
                     if (data.status === '1') {
                         data.result.forEach((item) => {
-                            if (item.contractCreator.toLowerCase() !==
-                                '0x0cdb34e6a4d635142bb92fe403d38f636bbb77b8'.toLowerCase()) {
+                            if (!DeployList.includes(item.contractCreator.toLowerCase())) {
                                 console.log(`BSC\thttps://bscscan.com/address/${item.contractAddress}\t${item.contractCreator}`);
                             }
                         });
@@ -42237,8 +42250,7 @@ async function run() {
                     const data = await response.json();
                     if (data.status === '1') {
                         data.result.forEach((item) => {
-                            if (item.contractCreator.toLowerCase() !==
-                                '0x0cdb34e6a4d635142bb92fe403d38f636bbb77b8'.toLowerCase()) {
+                            if (!DeployList.includes(item.contractCreator.toLowerCase())) {
                                 console.log(`ETH\thttps://etherscan.com/address/${item.contractAddress}\t${item.contractCreator}`);
                             }
                         });
@@ -42249,9 +42261,19 @@ async function run() {
                     const data = await response.json();
                     if (data.status === '1') {
                         data.result.forEach((item) => {
-                            if (item.contractCreator.toLowerCase() !==
-                                '0x0cdb34e6a4d635142bb92fe403d38f636bbb77b8'.toLowerCase()) {
-                                console.log(`OPT\thttps://optimistic.etherscan.io//address/${item.contractAddress}\t${item.contractCreator}`);
+                            if (!DeployList.includes(item.contractCreator.toLowerCase())) {
+                                console.log(`OPT\thttps://optimistic.etherscan.io/address/${item.contractAddress}\t${item.contractCreator}`);
+                            }
+                        });
+                    }
+                }
+                response = await fetch(`https://api.arbiscan.io/api?module=contract&action=getcontractcreation&contractaddresses=${contractAddress.join(',')}&apikey=GW3162V3DQ8IDU5XZYM28QK79W2K16CUYB`);
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.status === '1') {
+                        data.result.forEach((item) => {
+                            if (!DeployList.includes(item.contractCreator.toLowerCase())) {
+                                console.log(`ARB\thttps://arbiscan.io/address/${item.contractAddress}\t${item.contractCreator}`);
                             }
                         });
                     }
