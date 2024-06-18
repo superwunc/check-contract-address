@@ -42201,6 +42201,9 @@ async function run() {
         const files = getFiles('src');
         const allContractAddress = new Set();
         for (let i = 0, l = files.length; i < l; i++) {
+            if (files[i].endsWith('.svg')) {
+                continue;
+            }
             const content = node_fs_1.default.readFileSync(files[i], 'utf8');
             const regex = /(0x[0-9a-zA-Z]{40})/gm;
             let m;
