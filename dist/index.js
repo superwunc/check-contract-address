@@ -42199,7 +42199,7 @@ function getFiles(dir, files = []) {
 async function run() {
     try {
         const files = getFiles('src');
-        const allContractAddress = [];
+        const allContractAddress = new Set();
         for (let i = 0, l = files.length; i < l; i++) {
             const content = node_fs_1.default.readFileSync(files[i], 'utf8');
             const regex = /(0x[0-9a-zA-Z]{40})/gm;
@@ -42209,10 +42209,10 @@ async function run() {
                 if (m.index === regex.lastIndex) {
                     regex.lastIndex++;
                 }
-                allContractAddress.push(m[0]);
+                allContractAddress.add(m[0].toLowerCase());
             }
         }
-        const contractAddressGroup = lodash_1.default.chunk(allContractAddress, 5);
+        const contractAddressGroup = lodash_1.default.chunk(Array.from(allContractAddress), 5);
         if (contractAddressGroup.length > 0) {
             for (let i = 0, l = contractAddressGroup.length; i < l; i++) {
                 const contractAddress = contractAddressGroup[i];
