@@ -66,18 +66,19 @@ function getFiles(dir: string, files: string[] = []) {
 }
 
 async function fetchBscScanTag(address: string) {
+  const parseTags = []
   try {
     const reponse = await fetch(`https://bscscan.com/address/${address}`)
     if (reponse.ok) {
       const text = await reponse.text()
       const $ = cheerio.load(text)
-      const tags = $('#ContentPlaceHolder1_divLabels .hash-tag').text()
-      console.log('tags', tags)
-      return tags
+      const tags = $('#ContentPlaceHolder1_divLabels .hash-tag')
+      for (let i = 0, l = tags.length; i < l; i++) {
+        parseTags.push($(tags[i]).text())
+      }
     }
-  } catch (error) {
-    return []
-  }
+  } catch (error) {}
+  return parseTags
 }
 /**
  * The main function for the action.
@@ -119,10 +120,10 @@ export async function run(): Promise<void> {
           if (data.status === '1') {
             data.result.forEach(async (item: any) => {
               if (!DeployList.includes(item.contractCreator.toLowerCase())) {
+                const tags = await fetchBscScanTag(item.contractAddress)
                 console.log(
-                  `BSC\thttps://bscscan.com/address/${item.contractAddress}\t${item.contractCreator}`
+                  `BSC\thttps://bscscan.com/address/${item.contractAddress}\t${item.contractCreator}\t${tags.join('\t')}`
                 )
-                await fetchBscScanTag(item.contractAddress)
               }
             })
           }
