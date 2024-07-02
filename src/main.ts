@@ -1,5 +1,5 @@
 import * as core from '@actions/core'
-
+import * as cheerio from 'cheerio';
 import fs from 'node:fs'
 import _ from 'lodash'
 const WHITE_ADDRESS = [
@@ -64,6 +64,22 @@ function getFiles(dir: string, files: string[] = []) {
   }
   return files
 }
+
+async function fetchBscScanTag(address: string) {
+  try {
+    const reponse = await fetch(`https://bscscan.com/address/${address}`);
+    if (reponse.ok) {
+      const text = await reponse.text();
+      const $ = cheerio.load(text);
+      const tags = $('#ContentPlaceHolder1_divLabels .hash-tag').text();
+      console.log("tags", tags)
+      return tags;
+    }
+  }
+  catch(error) {
+    return [];
+  }
+}
 /**
  * The main function for the action.
  * @returns {Promise<void>} Resolves when the action is complete.
@@ -90,6 +106,7 @@ export async function run(): Promise<void> {
       }
     }
     const contractAddressGroup = _.chunk(Array.from(allContractAddress), 5)
+
     if (contractAddressGroup.length > 0) {
       for (let i = 0, l = contractAddressGroup.length; i < l; i++) {
         const contractAddress = contractAddressGroup[i]
@@ -101,11 +118,12 @@ export async function run(): Promise<void> {
         if (response.ok) {
           const data: any = await response.json()
           if (data.status === '1') {
-            data.result.forEach((item: any) => {
+            data.result.forEach(async (item: any) => {
               if (!DeployList.includes(item.contractCreator.toLowerCase())) {
                 console.log(
                   `BSC\thttps://bscscan.com/address/${item.contractAddress}\t${item.contractCreator}`
                 )
+                await fetchBscScanTag(item.contractAddress)
               }
             })
           }
