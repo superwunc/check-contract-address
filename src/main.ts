@@ -42,9 +42,10 @@ const WombatDeployer = [
   '0x8c6644415b3F3CD7FC0A453c5bE3d3306Fe0b2F9',
   '0xcB3Bb767104e0b3235520fafB182e005D7efD045'
 ]
-
+const RadiantDeployer = ['0x7759124915160E94C77EcE5B96E8a7fCec44Aa19']
 const DeployList = PendleDeployer.concat(MagpieDeployer)
   .concat(WombatDeployer)
+  .concat(RadiantDeployer)
   .map(item => item.toLowerCase())
 // Recursive function to get files
 function getFiles(dir: string, files: string[] = []) {
@@ -80,6 +81,56 @@ async function fetchBscScanTag(address: string) {
   } catch (error) {}
   return parseTags
 }
+async function fetchEthScanTag(address: string) {
+  const parseTags = []
+  try {
+    const reponse = await fetch(`https://etherscan.io/address/${address}`)
+    if (reponse.ok) {
+      const text = await reponse.text()
+      const $ = cheerio.load(text)
+      const tags = $('#ContentPlaceHolder1_divLabels .hash-tag')
+      for (let i = 0, l = tags.length; i < l; i++) {
+        parseTags.push($(tags[i]).text())
+      }
+    }
+  } catch (error) {}
+  return parseTags
+}
+
+async function fetchArbScanTag(address: string) {
+  const parseTags = []
+  try {
+    const reponse = await fetch(`https://arbiscan.io/address/${address}`)
+    if (reponse.ok) {
+      const text = await reponse.text()
+      const $ = cheerio.load(text)
+      const tags = $('#ContentPlaceHolder1_divLabels .hash-tag')
+      for (let i = 0, l = tags.length; i < l; i++) {
+        parseTags.push($(tags[i]).text())
+      }
+    }
+  } catch (error) {}
+  return parseTags
+}
+
+async function fetchOptScanTag(address: string) {
+  const parseTags = []
+  try {
+    const reponse = await fetch(
+      `https://optimistic.etherscan.io/address/${address}`
+    )
+    if (reponse.ok) {
+      const text = await reponse.text()
+      const $ = cheerio.load(text)
+      const tags = $('#ContentPlaceHolder1_divLabels .hash-tag')
+      for (let i = 0, l = tags.length; i < l; i++) {
+        parseTags.push($(tags[i]).text())
+      }
+    }
+  } catch (error) {}
+  return parseTags
+}
+
 /**
  * The main function for the action.
  * @returns {Promise<void>} Resolves when the action is complete.
@@ -121,9 +172,11 @@ export async function run(): Promise<void> {
             data.result.forEach(async (item: any) => {
               if (!DeployList.includes(item.contractCreator.toLowerCase())) {
                 const tags = await fetchBscScanTag(item.contractAddress)
-                console.log(
-                  `BSC\thttps://bscscan.com/address/${item.contractAddress}\t${item.contractCreator}\t${tags.join('\t')}`
-                )
+                if (!tags.includes('PancakeSwap')) {
+                  console.log(
+                    `BSC\thttps://bscscan.com/address/${item.contractAddress}\t${item.contractCreator}\t${tags.join('\t')}`
+                  )
+                }
               }
             })
           }
@@ -134,11 +187,14 @@ export async function run(): Promise<void> {
         if (response.ok) {
           const data: any = await response.json()
           if (data.status === '1') {
-            data.result.forEach((item: any) => {
+            data.result.forEach(async (item: any) => {
               if (!DeployList.includes(item.contractCreator.toLowerCase())) {
-                console.log(
-                  `ETH\thttps://etherscan.com/address/${item.contractAddress}\t${item.contractCreator}`
-                )
+                const tags = await fetchEthScanTag(item.contractAddress)
+                if (!tags.includes('PancakeSwap')) {
+                  console.log(
+                    `ETH\thttps://etherscan.com/address/${item.contractAddress}\t${item.contractCreator}\t${tags.join('\t')}`
+                  )
+                }
               }
             })
           }
@@ -150,11 +206,14 @@ export async function run(): Promise<void> {
         if (response.ok) {
           const data: any = await response.json()
           if (data.status === '1') {
-            data.result.forEach((item: any) => {
+            data.result.forEach(async (item: any) => {
               if (!DeployList.includes(item.contractCreator.toLowerCase())) {
-                console.log(
-                  `OPT\thttps://optimistic.etherscan.io/address/${item.contractAddress}\t${item.contractCreator}`
-                )
+                const tags = await fetchOptScanTag(item.contractAddress)
+                if (!tags.includes('PancakeSwap')) {
+                  console.log(
+                    `OPT\thttps://optimistic.etherscan.io/address/${item.contractAddress}\t${item.contractCreator}\t${tags.join('\t')}`
+                  )
+                }
               }
             })
           }
@@ -165,11 +224,14 @@ export async function run(): Promise<void> {
         if (response.ok) {
           const data = await response.json()
           if (data.status === '1') {
-            data.result.forEach((item: any) => {
+            data.result.forEach(async (item: any) => {
               if (!DeployList.includes(item.contractCreator.toLowerCase())) {
-                console.log(
-                  `ARB\thttps://arbiscan.io/address/${item.contractAddress}\t${item.contractCreator}`
-                )
+                const tags = await fetchArbScanTag(item.contractAddress)
+                if (!tags.includes('PancakeSwap')) {
+                  console.log(
+                    `ARB\thttps://arbiscan.io/address/${item.contractAddress}\t${item.contractCreator}\t${tags.join('\t')}`
+                  )
+                }
               }
             })
           }
